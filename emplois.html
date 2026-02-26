@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recrutement - Help Home Services</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Style pour la zone de confirmation */
+    #confirmationZone { display: none; }
+    .success-icon { font-size: 3rem; color: #28a745; }
+  </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <video autoplay muted loop id="background-video">
+    <source src="photo/video1.mp4" type="video/mp4">
+  </video>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <img src="photo/logo.jpeg" alt="Logo" height="60">
+      </a>
+      <div class="collapse navbar-collapse show">
+        <ul class="navbar-nav ms-auto fw-semibold">
+          <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">À propos</a></li>
+          <li class="nav-item"><a class="nav-link active" href="emplois.html">Emplois</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-fill d-flex align-items-center justify-content-center">
+    <div class="container py-5 mt-5 text-center">
+      <h2 class="text-white fw-bold mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">Rejoignez l'équipe</h2>
+      
+      <div class="card mx-auto shadow-lg rounded-4 p-4 bg-white" style="max-width: 600px;">
+        
+        <div id="formZone">
+          <h5 class="fw-bold mb-4" style="color: #194987;">Formulaire de Candidature</h5>
+          <form id="mainForm">
+            <div class="row text-start">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-bold">Nom</label>
+                <input type="text" id="nom" class="form-control" placeholder="Votre nom" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-bold">Prénom</label>
+                <input type="text" id="prenom" class="form-control" placeholder="Votre prénom" required>
+              </div>
+            </div>
+            <div class="mb-3 text-start">
+              <label class="form-label small fw-bold">Poste visé</label>
+              <select id="poste" class="form-select" required>
+                <option value="Femme de ménage">Femme de ménage</option>
+                <option value="Baby-sitter">Baby-sitter</option>
+                <option value="Cuisinière">Cuisinière</option>
+                <option value="Conciergerie">Conciergerie</option>
+              </select>
+            </div>
+            <div class="mb-3 text-start">
+              <label class="form-label small fw-bold">Objectif / Motivation</label>
+              <textarea id="objectif" class="form-control" rows="3" placeholder="Pourquoi voulez-vous travailler avec nous ?" required></textarea>
+            </div>
+            <button type="button" onclick="preparerEnvoi()" class="btn text-white fw-bold w-100 py-2" style="background-color: #194987;">
+              VÉRIFIER MA CANDIDATURE
+            </button>
+          </form>
+        </div>
+
+        <div id="confirmationZone">
+          <div class="success-icon mb-3">✓</div>
+          <h4 class="fw-bold text-success">Candidature prête !</h4>
+          <p class="text-muted">Vos informations ont été enregistrées sur le site. Cliquez ci-dessous pour les transmettre au recruteur sur WhatsApp.</p>
+          <hr>
+          <div class="bg-light p-3 rounded mb-4 text-start small">
+            <strong>Destinataire :</strong> Recrutement Help Home<br>
+            <strong>Objet :</strong> Candidature de <span id="resumeNom"></span>
+          </div>
+          <button id="btnFinal" class="btn btn-success btn-lg w-100 fw-bold">
+            ENVOYER SUR WHATSAPP
+          </button>
+          <button onclick="retourFormulaire()" class="btn btn-link btn-sm text-muted mt-2">Modifier mes infos</button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-white text-center py-4 mt-auto" style="background-color: #194987;">
+    <div class="container">
+      <img src="photo/logo.jpeg" alt="Logo" height="40" class="mb-2 rounded bg-white p-1">
+      <p class="mb-0 small">© 2025 Help_Home_Services | Tous droits réservés</p>
+    </div>
+  </footer>
+
+  <script>
+    let lienWhatsApp = "";
+
+    function preparerEnvoi() {
+      // Récupération des données
+      const nom = document.getElementById('nom').value;
+      const prenom = document.getElementById('prenom').value;
+      const poste = document.getElementById('poste').value;
+      const objectif = document.getElementById('objectif').value;
+
+      if(!nom || !prenom || !objectif) {
+          alert("Merci de remplir tous les champs.");
+          return;
+      }
+
+      // Préparation du lien
+      const monNumero = "243822192636";
+      const message = `*NOUVELLE CANDIDATURE*%0A` +
+                      `--------------------------%0A` +
+                      `*Nom complet :* ${nom} ${prenom}%0A` +
+                      `*Poste :* ${poste}%0A` +
+                      `*Objectif :* ${objectif}`;
+      
+      lienWhatsApp = `https://wa.me/${monNumero}?text=${message}`;
+
+      // Affichage de la zone de confirmation
+      document.getElementById('resumeNom').innerText = nom + " " + prenom;
+      document.getElementById('formZone').style.display = "none";
+      document.getElementById('confirmationZone').style.display = "block";
+
+      // Configuration du bouton final
+      document.getElementById('btnFinal').onclick = function() {
+          window.open(lienWhatsApp, '_blank');
+      };
+    }
+
+    function retourFormulaire() {
+      document.getElementById('formZone').style.display = "block";
+      document.getElementById('confirmationZone').style.display = "none";
+    }
+  </script>
+</body>
+</html>
